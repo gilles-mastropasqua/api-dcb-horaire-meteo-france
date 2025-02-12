@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Poste {
+  numPoste      String    @id @unique @db.Char(8) //  Météo-France station number (8 digits)
+  nomUsuel      String //  Common name of the station
+  commune       String //  Municipality name
+  lieuDit       String? //  Specific location (if applicable)
+  dateOuverture DateTime? //  Opening date of the station
+  dateFermeture DateTime? //  Closing date of the station
+  posteOuvert   Boolean   @default(false) //  Station open (true) or closed (false)
+  latitude      Float //  Latitude (negative in the southern hemisphere)
+  longitude     Float //  Longitude (negative west of Greenwich)
+  lambX         Int? //  Lambert X coordinate (in hm)
+  lambY         Int? //  Lambert Y coordinate (in hm)
+  altitude      Int? //  Altitude of the station (meters)
+  typePoste     Int? //  Type of station:
+  //  0 | Synoptic station (real-time acquisition, J+1 expertise)
+  //  1 | Automatic Radome-Resome station (real-time acquisition, J+1 expertise)
+  //  2 | Non-Radome-Resome automatic station (real-time acquisition, J+1 expertise)
+  //  3 | Automatic station (real-time acquisition, expertise within 21 days max)
+  //  4 | Manual climatological station (delayed data acquisition, expertise within 21 days max)
+  //  5 | Station with real-time or delayed acquisition, non-expertized data
+
+  observations ObservationHoraire[] //  Relationship with hourly observations
+
+  @@index([posteOuvert]) //  Index for filtering open/closed stations efficiently
+}
+
+model ObservationHoraire {
+  id              String   @id @default(uuid()) //  Unique identifier for each observation
+  dateObservation DateTime //  Observation timestamp (year, month, day, hour)
+  numPoste        String   @db.Char(8) //  Météo-France station number (8 digits)
+
+  // Optional meteorological data
+  rr1       String? //  Precipitation amount in 1 hour (mm and 1/10)
+  drr1      String? //  Precipitation duration (minutes)
+  hneigef   String? //  Fresh snow depth fallen in 6h (cm)
+  neigetot  String? //  Total snow depth on the ground (cm)
+  t         Float? //  Instantaneous shelter temperature (°C and 1/10)
+  td        String? //  Dew point temperature (°C and 1/10)
+  tn        String? //  Minimum shelter temperature in 1 hour (°C and 1/10)
+  htn       String? //  Time of minimum temperature (hhmm)
+  tx        String? //  Maximum shelter temperature in 1 hour (°C and 1/10)
+  htx       String? //  Time of maximum temperature (hhmm)
+  dg        String? //  Frost duration (T ≤ 0°C) (minutes)
+  t10       String? //  Temperature at 10 cm below ground (°C and 1/10)
+  t20       String? //  Temperature at 20 cm below ground (°C and 1/10)
+  t50       String? //  Temperature at 50 cm below ground (°C and 1/10)
+  t100      String? //  Temperature at 1 m below ground (°C and 1/10)
+  tnsol     String? //  Minimum temperature at 10 cm above ground (°C and 1/10)
+  tn50      String? //  Minimum temperature at 50 cm above ground (°C and 1/10)
+  tchaussee String? //  Surface temperature measured on grass or asphalt (°C and 1/10)
+  tw        String? //  Water temperature (°C and 1/10)
+  pstat     String? //  Station pressure (hPa and 1/10)
+  pmer      Float? //  Sea-level pressure (hPa and 1/10), only for altitudes ≤ 750m
+  geop      String? //  Geopotential height (mgp), only for altitudes > 750m
+  pmermin   String? //  Hourly minimum sea-level pressure (hPa and 1/10)
+  ff        String? //  10-minute average wind speed at 10m (m/s and 1/10)
+  dd        String? //  Wind direction (0-360° compass rose)
+  fxi       String? //  Maximum instantaneous wind speed in 1 hour (m/s and 1/10)
+  dxi       String? //  Direction of maximum instantaneous wind speed (0-360°)
+  hxi       String? //  Time of maximum instantaneous wind speed (hhmm)
+  fxy       String? //  Maximum hourly wind speed (m/s and 1/10)
+  dxy       String? //  Direction of maximum hourly wind speed (0-360°)
+  hxy       String? //  Time of maximum hourly wind speed (hhmm)
+  n         String? //  Total cloud cover (in octas)
+  nbas      String? //  Cloud cover of the lowest main cloud layer (in octas)
+  cl        String? //  SYNOP code for low clouds
+  cm        String? //  SYNOP code for middle clouds
+  ch        String? //  SYNOP code for high clouds
+  c1        String? //  WMO code for 1st cloud layer
+  c2        String? //  WMO code for 2nd cloud layer
+  c3        String? //  WMO code for 3rd cloud layer
+  c4        String? //  WMO code for 4th cloud layer
+  vv        String? //  Visibility (meters)
+  ww        String? //  WMO code for present weather conditions
+  sol       String? //  Ground state without snow
+  solng     String? //  Ground state with snow
+  uvIndice  String? //  UV index (0 to 12+)
+  ins       String? //  Hourly sunshine duration (UTC) (minutes)
+
+  // Relation to `Poste`
+  poste Poste @relation(fields: [numPoste], references: [numPoste])
+
+  @@index([numPoste])
+  @@index([dateObservation])
+}
