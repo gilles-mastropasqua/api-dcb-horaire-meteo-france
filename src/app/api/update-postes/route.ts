@@ -22,6 +22,8 @@ interface PosteRecord {
     TYPE_POSTE_ACTUEL: string;
 }
 
+export const maxDuration = 20;
+
 export async function GET() {
     try {
         console.log("🔹 Starting CSV file retrieval");
@@ -80,13 +82,13 @@ export async function GET() {
         const batchSize = 50;
         const parallelLimit = 300; // 🔥 Number of parallel batches
         let totalUpdated = 0;
-        const totalBatches = Math.ceil(records.length / batchSize);
+        // const totalBatches = Math.ceil(records.length / batchSize);
         const startTime = Date.now();
 
         // Function to process a single batch
         async function processBatch(batchRecords: PosteRecord[], batchNumber: number) {
-            const batchStartTime = Date.now();
-            console.log(`🔹 Processing batch ${batchNumber}/${totalBatches} (${batchRecords.length} records)`);
+            //const batchStartTime = Date.now();
+            //console.log(`🔹 Processing batch ${batchNumber}/${totalBatches} (${batchRecords.length} records)`);
 
             const upsertOperations = batchRecords.map((record: PosteRecord) => {
                 const dateOuverture = record.DATOUVR ? new Date(record.DATOUVR) : null;
@@ -133,8 +135,8 @@ export async function GET() {
                 );
                 totalUpdated += results.length;
 
-                const batchDuration = (Date.now() - batchStartTime) / 1000;
-                console.log(`✅ Batch ${batchNumber} inserted (${results.length} records) in ${batchDuration.toFixed(2)}s`);
+                //const batchDuration = (Date.now() - batchStartTime) / 1000;
+                //console.log(`✅ Batch ${batchNumber} inserted (${results.length} records) in ${batchDuration.toFixed(2)}s`);
             } catch (error) {
                 console.error(`❌ Error in batch ${batchNumber}`, error);
             }
