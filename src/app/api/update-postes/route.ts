@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { parse } from "csv-parse/sync";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+    log: ['info', 'warn', 'error'],
+});
 
 // Define the expected CSV record structure
 interface PosteRecord {
@@ -24,7 +26,6 @@ export async function GET() {
     try {
         console.log("🔹 Starting CSV file retrieval");
 
-        // Get the CSV URL from environment variables
         const csvUrl = process.env.POSTES_CSV_URL;
         if (!csvUrl) {
             console.error("❌ CSV file URL is not defined");
@@ -69,20 +70,28 @@ export async function GET() {
 
         console.log("🔍 Sample entry after correction:", records[0]);
 
-        console.log("🔹 Processing data in batches of 500");
+        console.log("🔹 Dropping indexes before insertion...");
+        await prisma.$executeRawUnsafe(`DROP INDEX IF EXISTS "idx_poste_numPoste";`);
+        await prisma.$executeRawUnsafe(`DROP INDEX IF EXISTS "idx_poste_open_status";`);
+        console.log("✅ Indexes dropped");
 
-        const batchSize = 500;
+        console.log("🔹 Processing data in parallel batches");
+
+        const batchSize = 50;
+        const parallelLimit = 300; // 🔥 Number of parallel batches
         let totalUpdated = 0;
+        const totalBatches = Math.ceil(records.length / batchSize);
+        const startTime = Date.now();
 
-        for (let i = 0; i < records.length; i += batchSize) {
-            const batch = records.slice(i, i + batchSize);
-            console.log(`🔹 Processing batch ${i / batchSize + 1} (${batch.length} records)`);
+        // Function to process a single batch
+        async function processBatch(batchRecords: PosteRecord[], batchNumber: number) {
+            const batchStartTime = Date.now();
+            console.log(`🔹 Processing batch ${batchNumber}/${totalBatches} (${batchRecords.length} records)`);
 
-            // Prepare upsert operations
-            const upsertOperations = batch.map((record: PosteRecord) => {
+            const upsertOperations = batchRecords.map((record: PosteRecord) => {
                 const dateOuverture = record.DATOUVR ? new Date(record.DATOUVR) : null;
                 const dateFermeture = record.DATFERM ? new Date(record.DATFERM) : null;
-                const posteOuvert = dateFermeture === null; // Open if no closure date
+                const posteOuvert = dateFermeture === null;
 
                 return {
                     where: { numPoste: record.NUM_POSTE },
@@ -98,10 +107,10 @@ export async function GET() {
                         lambY: parseInt(record.LAMBY, 10),
                         altitude: parseInt(record.ALTI, 10),
                         typePoste: parseInt(record.TYPE_POSTE_ACTUEL, 10),
-                        posteOuvert, // Update `posteOuvert` flag
+                        posteOuvert,
                     },
                     create: {
-                        numPoste: record.NUM_POSTE, // Stored as a STRING(8)
+                        numPoste: record.NUM_POSTE,
                         nomUsuel: record.NOM_USUEL,
                         commune: record.COMMUNE,
                         lieuDit: record.LIEU_DIT || null,
@@ -113,7 +122,7 @@ export async function GET() {
                         lambY: parseInt(record.LAMBY, 10),
                         altitude: parseInt(record.ALTI, 10),
                         typePoste: parseInt(record.TYPE_POSTE_ACTUEL, 10),
-                        posteOuvert, // Set `posteOuvert` flag
+                        posteOuvert,
                     },
                 };
             });
@@ -123,15 +132,45 @@ export async function GET() {
                     upsertOperations.map((op) => prisma.poste.upsert(op))
                 );
                 totalUpdated += results.length;
-                console.log(`✅ Batch ${i / batchSize + 1} inserted (${results.length} records)`);
+
+                const batchDuration = (Date.now() - batchStartTime) / 1000;
+                console.log(`✅ Batch ${batchNumber} inserted (${results.length} records) in ${batchDuration.toFixed(2)}s`);
             } catch (error) {
-                console.error(`❌ Error in batch ${i / batchSize + 1}`, error);
+                console.error(`❌ Error in batch ${batchNumber}`, error);
             }
         }
 
-        console.log(`✅ All data inserted! (${totalUpdated} records)`);
+        // Process all batches in parallel with a limit
+        const batchPromises = [];
+        for (let i = 0; i < records.length; i += batchSize) {
+            const batchRecords = records.slice(i, i + batchSize);
+            const batchNumber = i / batchSize + 1;
 
-        return NextResponse.json({ message: "Update complete", updated: totalUpdated });
+            batchPromises.push(processBatch(batchRecords, batchNumber));
+
+            // Limit parallelism to `parallelLimit`
+            if (batchPromises.length >= parallelLimit) {
+                await Promise.allSettled(batchPromises);
+                batchPromises.length = 0; // Clear completed promises
+            }
+        }
+
+        // Wait for the last batch to complete
+        await Promise.allSettled(batchPromises);
+
+        console.log("🔹 Recreating indexes...");
+        await prisma.$executeRawUnsafe(`CREATE INDEX "idx_poste_numPoste" ON "Poste"("numPoste");`);
+        await prisma.$executeRawUnsafe(`CREATE INDEX "idx_poste_open_status" ON "Poste"("posteOuvert");`);
+        console.log("✅ Indexes recreated");
+
+        const totalDuration = (Date.now() - startTime) / 1000;
+        console.log(`✅ All data inserted! (${totalUpdated} records) in ${totalDuration.toFixed(2)}s`);
+
+        return NextResponse.json({
+            message: "Update complete",
+            updated: totalUpdated,
+            totalTime: `${totalDuration.toFixed(2)}s`
+        });
 
     } catch (error) {
         console.error("❌ Error updating stations:", error);
