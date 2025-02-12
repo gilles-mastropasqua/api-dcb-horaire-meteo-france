@@ -1,0 +1,186 @@
+{
+  "NUM_POSTE": {
+    "description": "Numéro Météo-France du poste sur 8 chiffres",
+    "type": "int"
+  },
+  "NOM_USUEL": {
+    "description": "Nom usuel du poste",
+    "type": "commune"
+  },
+  "LAT": {
+    "description": "Latitude, négative au sud (en degrés et millionièmes de degré)",
+    "type": "latitude_wgs_fr_metropole"
+  },
+  "LON": {
+    "description": "Longitude, négative à l’ouest de Greenwich (en degrés et millionièmes de degré)",
+    "type": "longitude_wgs_fr_metropole"
+  },
+  "ALTI": {
+    "description": "Altitude du pied de l'abri ou du pluviomètre si pas d'abri (en m)",
+    "type": "int"
+  },
+  "AAAAMMJJHH": {
+    "description": "Date de la mesure (année mois jour heure)",
+    "type": "int"
+  },
+  "RR1": {
+    "description": "Quantité de précipitation tombée en 1 heure (en mm et 1/10)",
+    "type": "string"
+  },
+  "DRR1": {
+    "description": "Durée des précipitations (en mn)",
+    "type": "string"
+  },
+  "FF": {
+    "description": "Force du vent moyenné sur 10 mn, mesurée à 10 m (en m/s et 1/10)",
+    "type": "string"
+  },
+  "DD": {
+    "description": "Direction de FF (en rose de 360)",
+    "type": "string"
+  },
+  "FXY": {
+    "description": "Valeur maximale de FF dans l’heure (en m/s et 1/10)",
+    "type": "string"
+  },
+  "DXY": {
+    "description": "Direction de FXY (rose de 360)",
+    "type": "string"
+  },
+  "HXY": {
+    "description": "Heure de FXY (hhmm)",
+    "type": "string"
+  },
+  "FXI": {
+    "description": "Force maximale du vent instantané dans l’heure, mesurée à 10 m (en m/s et 1/10)",
+    "type": "string"
+  },
+  "DXI": {
+    "description": "Direction de FXI (en rose de 360)",
+    "type": "string"
+  },
+  "HXI": {
+    "description": "Heure de FXI (hhmm)",
+    "type": "string"
+  },
+  "FF2": {
+    "description": "Force du vent moyenné sur 10 mn, mesurée à 2 m (en m/s et 1/10)",
+    "type": "string"
+  },
+  "DD2": {
+    "description": "Direction de FF2 (en rose de 360)",
+    "type": "string"
+  },
+  "FXI2": {
+    "description": "Force maximale du vent instantané dans l’heure, mesurée à 2 m (en m/s et 1/10)",
+    "type": "string"
+  },
+  "DXI2": {
+    "description": "Direction de FXI2 (en rose de 360)",
+    "type": "string"
+  },
+  "HXI2": {
+    "description": "Heure de FXI2 (hhmm)",
+    "type": "string"
+  },
+  "FXI3S": {
+    "description": "Force maximale du vent moyenné sur 3 secondes dans l’heure (en m/s et 1/10)",
+    "type": "string"
+  },
+  "DXI3S": {
+    "description": "Direction de FXI3S (en rose de 360)",
+    "type": "string"
+  },
+  "HFXI3S": {
+    "description": "Heure de FXI3S (hhmm)",
+    "type": "string"
+  },
+  "T": {
+    "description": "Température sous abri instantanée (en °C et 1/10)",
+    "type": "float"
+  },
+  "TD": {
+    "description": "Température du point de rosée (en °C et 1/10)",
+    "type": "string"
+  },
+  "TN": {
+    "description": "Température minimale sous abri dans l’heure (en °C et 1/10)",
+    "type": "string"
+  },
+  "HTN": {
+    "description": "Heure de TN (hhmm)",
+    "type": "string"
+  },
+  "TX": {
+    "description": "Température maximale sous abri dans l’heure (en °C et 1/10)",
+    "type": "string"
+  },
+  "HTX": {
+    "description": "Heure de TX (hhmm)",
+    "type": "string"
+  },
+  "U": {
+    "description": "Humidité relative (en %)",
+    "type": "string"
+  },
+  "PMER": {
+    "description": "Pression mer, seulement pour les postes dont l’altitude est inférieure ou égale à 750 m (en hPa et 1/10)",
+    "type": "float"
+  },
+  "PSTAT": {
+    "description": "Pression station (en hPa et 1/10)",
+    "type": "code_waldec"
+  },
+  "GEOP": {
+    "description": "Géopotentiel, seulement pour les stations dont l’altitude est supérieure à 750 m (en mgp)",
+    "type": "string"
+  },
+  "N": {
+    "description": "Nébulosité totale (en octa)",
+    "type": "string"
+  },
+  "VV": {
+    "description": "Visibilité (en m)",
+    "type": "string"
+  },
+  "WW": {
+    "description": "Code OMM descriptif du temps présent",
+    "type": "string"
+  },
+  "SOL": {
+    "description": "État du sol sans neige",
+    "type": "string"
+  },
+  "SOLNG": {
+    "description": "État du sol avec neige",
+    "type": "string"
+  },
+  "TMER": {
+    "description": "Température de la mer (en °C et 1/10)",
+    "type": "string"
+  },
+  "NEIGETOT": {
+    "description": "Hauteur de neige totale au sol (en cm)",
+    "type": "string"
+  },
+  "HNEIGEF": {
+    "description": "Hauteur de neige fraîche tombée en 6h (en cm)",
+    "type": "string"
+  },
+  "TSNEIGE": {
+    "description": "Température de surface de la neige (en °C et 1/10)",
+    "type": "string"
+  },
+  "VVMER": {
+    "description": "Code OMM de la visibilité vers la mer",
+    "type": "string"
+  },
+  "UV_INDICE": {
+    "description": "Indice UV (de 0 à 12 et +)",
+    "type": "string"
+  },
+  "INS": {
+    "description": "Insolation horaire en heure UTC (en mn)",
+    "type": "string"
+  }
+}
