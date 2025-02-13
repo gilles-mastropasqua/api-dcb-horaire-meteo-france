@@ -1,7 +1,3 @@
-Here is a **Markdown documentation file** explaining how to use the GraphQL API with the provided schema. This guide covers **queries, filters, sorting, and pagination**.
-
----
-
 # 📖 GraphQL API Documentation
 
 ## 📌 Introduction
