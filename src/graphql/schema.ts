@@ -91,6 +91,7 @@ const Query = queryType({
 
                 if (!poste) return null;
 
+
                 return {
                     ...poste,
                     dateOuverture: poste.dateOuverture ? poste.dateOuverture.toISOString() : null,
