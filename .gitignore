@@ -41,3 +41,5 @@ yarn-error.log*
 next-env.d.ts
 /.idea/
 /src/graphql/generated/
+/src/graphql/generated/nexus-types.ts
+/src/graphql/generated/schema.graphql
