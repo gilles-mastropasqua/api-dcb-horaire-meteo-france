@@ -1,3 +1,7 @@
+Here is a **Markdown documentation file** explaining how to use the GraphQL API with the provided schema. This guide covers **queries, filters, sorting, and pagination**.
+
+---
+
 # 📖 GraphQL API Documentation
 
 ## 📌 Introduction
@@ -12,12 +16,12 @@ This document provides details on how to **query** the `Poste` data using **Grap
 ## 📌 Available Queries
 
 ### 1️⃣ **Fetch All Stations (`postes`)**
-Retrieve a list of weather stations with optional filters, pagination, and search.
+Retrieve a list of weather stations with optional filters, pagination, sorting, and search.
 
 #### 🔹 **Query**
 ```graphql
-query GetPostes($filter: JSON, $skip: Int, $take: Int) {
-  postes(filter: $filter, skip: $skip, take: $take) {
+query GetPostes($filter: JSON, $orderBy: [OrderByInput!], $skip: Int, $take: Int) {
+  postes(filter: $filter, orderBy: $orderBy, skip: $skip, take: $take) {
     numPoste
     nomUsuel
     commune
@@ -39,6 +43,7 @@ query GetPostes($filter: JSON, $skip: Int, $take: Int) {
 ```json
 {
   "filter": { "commune": "Paris", "posteOuvert": true },
+  "orderBy": [{ "dateOuverture": "desc" }],
   "skip": 0,
   "take": 10
 }
@@ -144,13 +149,18 @@ You can filter the stations based on **any field** using the `filter` argument.
 
 ### ✅ Supported Filters
 - **Text Fields (`contains` search, case-insensitive)**
-    - `nomUsuel`
-    - `commune`
-    - `lieuDit`
+  - `nomUsuel`
+  - `commune`
+  - `lieuDit`
 - **Exact Match**
-    - `numPoste`
-    - `posteOuvert` (true/false)
-    - `altitude`, `latitude`, `longitude`
+  - `numPoste`
+  - `posteOuvert` (true/false)
+  - `altitude`, `latitude`, `longitude`
+- **Numeric Filters** (`gte`, `lte`, `gt`, `lt`)
+  - `altitude`
+  - `latitude`
+  - `longitude`
+  - `typePoste`
 
 #### 🔹 **Example: Get all stations in "Lyon"**
 ```json
@@ -175,10 +185,29 @@ You can filter the stations based on **any field** using the `filter` argument.
 
 ---
 
+## 📌 Sorting
+Sorting can be done on any field using the `orderBy` argument.
+
+### 🔹 **Example: Sort by `dateOuverture` descending**
+```json
+{
+  "orderBy": [{ "dateOuverture": "desc" }]
+}
+```
+
+### 🔹 **Example: Sort by `commune` ascending, then `altitude` descending**
+```json
+{
+  "orderBy": [{ "commune": "asc" }, { "altitude": "desc" }]
+}
+```
+
+---
+
 ## 📌 Pagination
 The API supports **pagination** via:
 - `skip`: Number of records to skip (default: `0`).
-- `take`: Number of records to return (default: `50`, max: unlimited `null`).
+- `take`: Number of records to return (default: `50`, **unlimited if `-1`**).
 
 ### 🔹 **Example: Fetch stations 51 to 100**
 ```json
@@ -202,7 +231,8 @@ The API supports **pagination** via:
 ## 🚀 **Conclusion**
 - Use **GraphQL Playground** (`/api/graphql`) for **live API exploration**.
 - Use `filter` to **search across all fields** dynamically.
+- Use `orderBy` for **sorting results**.
 - Use `countPostes` to **get total records** matching criteria.
-- Use `skip` & `take` for **pagination**.
+- Use `skip` & `take` for **pagination** (`-1` for no limit).
 
-🎯 **Now you can query the weather stations efficiently!** 🚀
+
