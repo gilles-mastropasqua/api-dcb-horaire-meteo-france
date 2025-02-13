@@ -107,17 +107,4 @@ export const schema = makeSchema({
         schema: join(process.cwd(), "src/graphql/generated/schema.graphql"),
         typegen: join(process.cwd(), "src/graphql/generated/nexus-types.ts"),
     },
-    shouldGenerateArtifacts: true,
-    sourceTypes: {
-        modules: [
-            {
-                module: "@prisma/client",
-                alias: "prisma",
-            },
-        ],
-    },
-    contextType: {
-        module: join(process.cwd(), "src/graphql/context.ts"),
-        export: "Context",
-    },
 });
