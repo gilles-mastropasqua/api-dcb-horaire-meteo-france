@@ -125,8 +125,8 @@ const Query = queryType({
 
                 return results.map(poste => ({
                     ...poste,
-                    dateOuverture: poste.dateOuverture ? poste.dateOuverture.toISOString() : null,
-                    dateFermeture: poste.dateFermeture ? poste.dateFermeture.toISOString() : null,
+                    datouvr: poste.datouvr ? poste.datouvr.toISOString() : null,
+                    datferm: poste.datferm ? poste.datferm.toISOString() : null,
                 }));
             },
         });
@@ -154,8 +154,8 @@ const Query = queryType({
 
                 return {
                     ...poste,
-                    dateOuverture: poste.dateOuverture ? poste.dateOuverture.toISOString() : null,
-                    dateFermeture: poste.dateFermeture ? poste.dateFermeture.toISOString() : null,
+                    datferm: poste.datferm ? poste.datferm.toISOString() : null,
+                    datouvr: poste.datouvr ? poste.datouvr.toISOString() : null,
                 };
             },
         });

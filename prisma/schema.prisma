@@ -8,340 +8,230 @@ datasource db {
 }
 
 model Poste {
-  numPoste      String    @id @unique @db.Char(8) //  Météo-France station number (8 digits)
-  nomUsuel      String //  Common name of the station
-  commune       String //  Municipality name
-  lieuDit       String? //  Specific location (if applicable)
-  dateOuverture DateTime? //  Opening date of the station
-  dateFermeture DateTime? //  Closing date of the station
-  posteOuvert   Boolean   @default(false) //  Station open (true) or closed (false)
-  latitude      Float //  Latitude (negative in the southern hemisphere)
-  longitude     Float //  Longitude (negative west of Greenwich)
-  lambX         Int? //  Lambert X coordinate (in hm)
-  lambY         Int? //  Lambert Y coordinate (in hm)
-  altitude      Int? //  Altitude of the station (meters)
-  typePoste     Int? //  Type of station:
-  //  0 | Synoptic station (real-time acquisition, J+1 expertise)
-  //  1 | Automatic Radome-Resome station (real-time acquisition, J+1 expertise)
-  //  2 | Non-Radome-Resome automatic station (real-time acquisition, J+1 expertise)
-  //  3 | Automatic station (real-time acquisition, expertise within 21 days max)
-  //  4 | Manual climatological station (delayed data acquisition, expertise within 21 days max)
-  //  5 | Station with real-time or delayed acquisition, non-expertized data
+  numPoste        String               @id @unique @db.Char(8)
+  nomUsuel        String
+  commune         String
+  lieuDit         String?
+  datouvr         DateTime?
+  datferm         DateTime?
+  posteOuvert     Boolean              @default(false)
+  lat             Float
+  lon             Float
+  lambx           Int?
+  lamby           Int?
+  alti            Int?
+  typePosteActuel Int?
+  observations    ObservationHoraire[]
 
-  observations ObservationHoraire[] //  Relationship with hourly observations
-
-  @@index([posteOuvert]) //  Index for filtering open/closed stations efficiently
+  @@index([posteOuvert])
 }
 
 model ObservationHoraire {
-  dateObservation DateTime //  Observation timestamp (year, month, day, hour)
-  numPoste        String   @db.Char(8) //  Météo-France station number (8 digits)
-
-  // Optional meteorological data
-  n            String?
-  t            Float?
-  u            String?
-  b1           String?
-  b2           String?
-  b3           String?
-  b4           String?
-  c1           String?
-  c2           String?
-  c3           String?
-  c4           String?
-  ch           String?
-  cl           String?
-  cm           String?
-  dd           String?
-  dg           String?
-  ff           String?
-  n1           String?
-  n2           String?
-  n3           String?
-  n4           String?
-  qn           String?
-  qt           Int?
-  qu           String?
-  td           String?
-  tn           String?
-  tx           String?
-  un           String?
-  uv           String?
-  ux           String?
-  vv           String?
-  w1           String?
-  w2           String?
-  ww           String?
-  dd2          String?
-  dif          String?
-  dir          String?
-  dxi          String?
-  dxy          String?
-  ff2          String?
-  fxi          String?
-  fxy          String?
-  glo          String?
-  htn          String?
-  htx          String?
-  hun          String?
-  hux          String?
-  hxi          String?
-  hxy          String?
-  lat          String?
-  lon          String?
-  qb1          String?
-  qb2          String?
-  qb3          String?
-  qb4          String?
-  qc1          String?
-  qc2          String?
-  qc3          String?
-  qc4          String?
-  qch          String?
-  qcl          String?
-  qcm          String?
-  qdd          String?
-  qdg          String?
-  qff          String?
-  qn1          String?
-  qn2          String?
-  qn3          String?
-  qn4          String?
-  qtd          String?
-  qtn          String?
-  qtx          String?
-  qun          String?
-  quv          String?
-  qux          String?
-  qvv          String?
-  qw1          String?
-  qw2          String?
-  qww          String?
-  rr1          String?
-  sol          String?
-  t10          String?
-  t20          String?
-  t50          String?
-  tsv          String?
-  uv2          String?
-  alti         Int?
-  dif2         String?
-  dir2         String?
-  drr1         String?
-  dxi2         String?
-  fxi2         String?
-  geop         String?
-  glo2         String?
-  hxi2         String?
-  ins2         String?
-  nbas         String?
-  pmer         Float?
-  qdd2         String?
-  qdif         String?
-  qdir         String?
-  qdxi         String?
-  qdxy         String?
-  qff2         String?
-  qfxi         String?
-  qfxy         String?
-  qglo         String?
-  qhtn         String?
-  qhtx         String?
-  qhun         String?
-  qhux         String?
-  qhxi         String?
-  qhxy         String?
-  qins         String?
-  qrr1         String?
-  qsol         String?
-  qt10         String?
-  qt20         String?
-  qt50         String?
-  qtsv         String?
-  quv2         String?
-  t100         String?
-  tmer         String?
-  tn50         String?
-  dxi3S        String?
-  fxi3S        String?
-  pstat        String?
-  qdif2        String?
-  qdir2        String?
-  qdrr1        String?
-  qdxi2        String?
-  qfxi2        String?
-  qgeop        String?
-  qglo2        String?
-  qhxi2        String?
-  qins2        String?
-  qnbas        String?
-  qpmer        Int?
-  qt100        String?
-  qtmer        String?
-  qtn50        String?
-  solng        String?
-  tnsol        String?
-  vvmer        String?
-  dhumec       String?
-  dvv200       String?
-  hfxi3S       String?
-  hvague       String?
-  infrar       String?
-  pvague       String?
-  qdxi3S       String?
-  qfxi3S       String?
-  qpstat       Int?
-  qsolng       String?
-  qtnsol       String?
-  qvvmer       String?
-  tlagon       String?
-  dhumi40      String?
-  dhumi80      String?
-  esneige      String?
-  etatmer      String?
-  hneigef      String?
-  infrar2      String?
-  pmermin      String?
-  qdhumec      String?
-  qdvv200      String?
-  qhfxi3S      String?
-  qhvague      String?
-  qinfrar      String?
-  qpvague      String?
-  qtlagon      String?
-  tsneige      String?
-  dirhoule     String?
-  neigetot     String?
-  qdhumi40     String?
-  qdhumi80     String?
-  qesneige     String?
-  qetatmer     String?
-  qhneigef     String?
-  qinfrar2     String?
-  qpmermin     String?
-  qtsneige     String?
-  hneigefi1    String?
-  hneigefi3    String?
-  nomUsuel     String?
-  qdirhoule    String?
-  qneigetot    String?
-  tchaussee    String?
-  tubeneige    String?
-  tvegetaux    String?
-  uvIndice     String?
-  aaaammjjhh   Int?
-  ecoulement   String?
-  qhneigefi1   String?
-  qhneigefi3   String?
-  qtchaussee   String?
-  qtubeneige   String?
-  qtvegetaux   String?
-  quvIndice    String?
-  chargeneige  String?
-  qecoulement  String?
-  qchargeneige String?
-  // alti        Float? // Altitude of the shelter base or rain gauge if no shelter (m)
-  // b1          String? // Base of the 1st cloud layer (m)
-  // b2          String? // Base of the 2nd cloud layer (m)
-  // b3          String? // Base of the 3rd cloud layer (m)
-  // b4          String? // Base of the 4th cloud layer (m)
-  // c1          String? // WMO code for the 1st cloud layer. See WMO documentation for details
-  // c2          String? // WMO code for the 2nd cloud layer. See WMO documentation for details
-  // c3          String? // WMO code for the 3rd cloud layer. See WMO documentation for details
-  // c4          String? // WMO code for the 4th cloud layer. See WMO documentation for details
-  // ch          String? // SYNOP code for high clouds. See SYNOP documentation for details
-  // chargeneige String? // Snow load (kg/m2)
-  // cl          String? // SYNOP code for low clouds. See SYNOP documentation for details
-  // cm          String? // SYNOP code for middle clouds. See SYNOP documentation for details
-  // dhumec      String? // Duration of wetness (minutes)
-  // dhumi40     String? // Duration with humidity ≤ 40% (minutes)
-  // dhumi80     String? // Duration with humidity ≥ 80% (minutes)
-  // dg          String? // Frost duration (T ≤ 0°C) (minutes)
-  // dd          String? // Wind direction at 10m (0-360° compass rose)
-  // dd2         String? // Wind direction at 2m (0-360° compass rose)
-  // dif         String? // Hourly diffuse radiation in UTC time (J/cm2)
-  // dif2        String? // Hourly diffuse radiation in TSV time (J/cm2)
-  // dir         String? // Hourly direct radiation in UTC time (J/cm2)
-  // dir2        String? // Hourly direct radiation in TSV time (J/cm2)
-  // dirhoule    String? // Swell direction for semaphore stations, 999 if variable (0-360° compass rose)
-  // drr1        String? // Precipitation duration (minutes)
-  // dvv200      String? // Duration with visibility < 200 m (minutes)
-  // dxi         String? // Direction of maximum instantaneous wind speed at 10m (0-360°)
-  // dxi2        String? // Direction of maximum instantaneous wind speed at 2m (0-360°)
-  // dxi3s       String? // Direction of maximum 3-second wind speed in the hour (0-360°)
-  // dxy         String? // Direction of maximum hourly wind speed (0-360°)
-  // ecoulement  String? //  Unused field
-  // esneige     String? //  Descriptive code of snow state for snow meteorological stations. See documentation for code mapping
-  // etatmer     String? //  OMM code for sea state at semaphore stations. See documentation for code mapping
-  // ff          String? // 10-minute average wind speed at 10m (m/s and 1/10)
-  // ff2         String? // 10-minute average wind speed at 2m (m/s and 1/10)
-  // fxi         String? // Maximum instantaneous wind speed in 1 hour at 10m (m/s and 1/10)
-  // fxi2        String? // Maximum instantaneous wind speed in 1 hour at 2m (m/s and 1/10)
-  // fxi3s       String? // Maximum 3-second wind speed in the hour (m/s and 1/10)
-  // fxy         String? // Maximum hourly wind speed (m/s and 1/10)
-  // geop        String? // Geopotential height, only for stations above 750m (mgp)
-  // glo         String? // Hourly global radiation in UTC time (J/cm2)
-  // glo2        String? // Hourly global radiation in TSV time (J/cm2)
-  // hfxi3s      String? // Time of maximum 3-second wind speed (hhmm)
-  // hneigef     String? // Fresh snow depth fallen in 6 hours (cm)
-  // hneigefi1   String? // Fresh snow depth fallen in 1 hour (cm) - optional for non-synoptic hours
-  // hneigefi3   String? // Fresh snow depth fallen in 3 hours (cm) - optional for intermediate synoptic hours
-  // htn         String? // Time of minimum shelter temperature (hhmm)
-  // htx         String? // Time of maximum shelter temperature (hhmm)
-  // hux         String? // Time of maximum relative humidity (hhmm)
-  // hun         String? // Time of minimum relative humidity (hhmm)
-  // hvague      String? // Wave height, particularly for fixed buoys (m and 1/10)
-  // hxi         String? // Time of maximum instantaneous wind speed at 10m (hhmm)
-  // hxi2        String? // Time of maximum instantaneous wind speed at 2m (hhmm)
-  // hxy         String? // Time of maximum hourly wind speed (hhmm)
-  // infrar      String? // Hourly infrared radiation in UTC time (J/cm2)
-  // infrar2     String? // Hourly infrared radiation in TSV time (J/cm2)
-  // ins         String? // Hourly sunshine duration in UTC time (minutes)
-  // ins2        String? // Hourly sunshine duration in TSV time (minutes)
-  // lat         Float? // Latitude, negative in the southern hemisphere (degrees and millionths of degrees)
-  // lon         Float? // Longitude, negative west of Greenwich (degrees and millionths of degrees)
-  // n           String? //  Total cloud cover (in octas), 9 = sky obscured by fog or other meteorological phenomenon
-  // n1          String? // Cloud cover of the 1st cloud layer (in octas)
-  // n2          String? // Cloud cover of the 2nd cloud layer (in octas)
-  // n3          String? // Cloud cover of the 3rd cloud layer (in octas)
-  // n4          String? // Cloud cover of the 4th cloud layer (in octas)
-  // nbas        String? // Cloud cover of the lowest main cloud layer (in octas)
-  // neigetot    String? // Total snow depth on the ground (cm)
-  // nomUsuel    String? // Common name of the station
-  // pmer        Float? // Sea-level pressure, only for stations at ≤ 750m (hPa and 1/10)
-  // pmermin     String? // Hourly minimum sea-level pressure (hPa and 1/10)
-  // pstat       String? // Station pressure (hPa and 1/10)
-  // pvague      String? // Wave period (seconds and 1/10)
-  // rr1         String? // Precipitation amount in 1 hour (mm and 1/10)
-  // sol         String? //  OMM code for ground state without snow. See WMO documentation for details
-  // solng       String? //  OMM code for ground state with snow. See WMO documentation for details
-  // t           Float? // Instantaneous shelter temperature (°C and 1/10)
-  // t10         String? // Temperature at 10 cm below ground (°C and 1/10)
-  // t20         String? // Temperature at 20 cm below ground (°C and 1/10)
-  // t50         String? // Temperature at 50 cm below ground (°C and 1/10)
-  // t100        String? // Temperature at 1 m below ground (°C and 1/10)
-  // tchaussee   String? // Surface temperature measured on grass or asphalt (°C and 1/10)
-  // td          String? // Dew point temperature (°C and 1/10)
-  // tlagon      String? //  Unused field
-  // tmer        String? // Sea temperature (°C and 1/10)
-  // tsneige     String? // Snow surface temperature (°C and 1/10)
-  // tsv         String? // Vapor pressure (hPa and 1/10)
-  // tubeNeige   String? // Snow tube penetration depth (cm)
-  // tvegetaux   String? //  Unused field
-  // u           String? // Relative humidity (%)
-  // un          String? // Minimum relative humidity in 1 hour (%)
-  // ux          String? // Maximum relative humidity in 1 hour (%)
-  // uv          String? // Hourly ultraviolet radiation in UTC time (J/cm2)
-  // uv2         String? // Hourly ultraviolet radiation in TSV time (J/cm2)
-  // uvIndice    String? // UV index (0 to 12+)
-  // vv          String? // Visibility (m)
-  // vvmer       String? //  OMM code for sea visibility. See documentation for code mapping
-  // w1          String? // WMO code for past weather 1. See WMO documentation for details
-  // w2          String? // WMO code for past weather 2. See WMO documentation for details
-  // ww          String? // WMO code for present weather conditions. See WMO documentation for details
-
-  // Relation to `Poste`
-  poste Poste @relation(fields: [numPoste], references: [numPoste])
+  dateObservation DateTime
+  numPoste        String   @db.Char(8)
+  rr1             String?
+  drr1            String?
+  hneigef         String?
+  neigetot        String?
+  t               Float?
+  td              String?
+  htn             String?
+  htx             String?
+  dg              String?
+  t10             String?
+  t20             String?
+  t50             String?
+  t100            String?
+  tchaussee       String?
+  pstat           String?
+  pmer            Float?
+  geop            String?
+  pmermin         String?
+  ff              String?
+  dd              String?
+  fxi             String?
+  dxi             String?
+  hxi             String?
+  fxy             String?
+  dxy             String?
+  hxy             String?
+  n               String?
+  nbas            String?
+  cl              String?
+  cm              String?
+  ch              String?
+  c1              String?
+  c2              String?
+  c3              String?
+  c4              String?
+  vv              String?
+  ww              String?
+  sol             String?
+  solng           String?
+  uvIndice        String?
+  alti            Int?
+  b1              String?
+  b2              String?
+  b3              String?
+  b4              String?
+  chargeneige     String?
+  dd2             String?
+  dhumec          String?
+  dhumi40         String?
+  dhumi80         String?
+  dif             String?
+  dif2            String?
+  dir             String?
+  dir2            String?
+  dirhoule        String?
+  dvv200          String?
+  dxi2            String?
+  ecoulement      String?
+  esneige         String?
+  etatmer         String?
+  ff2             String?
+  fxi2            String?
+  glo             String?
+  glo2            String?
+  hneigefi1       String?
+  hneigefi3       String?
+  hun             String?
+  hux             String?
+  hvague          String?
+  hxi2            String?
+  infrar          String?
+  infrar2         String?
+  ins2            String?
+  lat             String?
+  lon             String?
+  n1              String?
+  n2              String?
+  n3              String?
+  n4              String?
+  nomUsuel        String?
+  pvague          String?
+  tlagon          String?
+  tmer            String?
+  tsneige         String?
+  tsv             String?
+  tvegetaux       String?
+  u               String?
+  un              String?
+  uv              String?
+  uv2             String?
+  ux              String?
+  vvmer           String?
+  w1              String?
+  w2              String?
+  aaaammjjhh      Int?
+  qb1             String?
+  qb2             String?
+  qb3             String?
+  qb4             String?
+  qc1             String?
+  qc2             String?
+  qc3             String?
+  qc4             String?
+  qch             String?
+  qchargeneige    String?
+  qcl             String?
+  qcm             String?
+  qdd             String?
+  qdd2            String?
+  qdg             String?
+  qdhumec         String?
+  qdhumi40        String?
+  qdhumi80        String?
+  qdif            String?
+  qdif2           String?
+  qdir            String?
+  qdir2           String?
+  qdirhoule       String?
+  qdrr1           String?
+  qdvv200         String?
+  qdxi            String?
+  qdxi2           String?
+  qdxy            String?
+  qecoulement     String?
+  qesneige        String?
+  qetatmer        String?
+  qff             String?
+  qff2            String?
+  qfxi            String?
+  qfxi2           String?
+  qfxy            String?
+  qgeop           String?
+  qglo            String?
+  qglo2           String?
+  qhneigef        String?
+  qhneigefi1      String?
+  qhneigefi3      String?
+  qhtn            String?
+  qhtx            String?
+  qhun            String?
+  qhux            String?
+  qhvague         String?
+  qhxi            String?
+  qhxi2           String?
+  qhxy            String?
+  qinfrar         String?
+  qinfrar2        String?
+  qins            String?
+  qins2           String?
+  qn              String?
+  qn1             String?
+  qn2             String?
+  qn3             String?
+  qn4             String?
+  qnbas           String?
+  qneigetot       String?
+  qpmer           Int?
+  qpmermin        String?
+  qpstat          Int?
+  qpvague         String?
+  qrr1            String?
+  qsol            String?
+  qsolng          String?
+  qt              Int?
+  qt10            String?
+  qt100           String?
+  qt20            String?
+  qt50            String?
+  qtchaussee      String?
+  qtd             String?
+  qtlagon         String?
+  qtmer           String?
+  qtn             String?
+  qtn50           String?
+  qtnsol          String?
+  qtsneige        String?
+  qtsv            String?
+  qtubeneige      String?
+  qtvegetaux      String?
+  qtx             String?
+  qu              String?
+  qun             String?
+  quv             String?
+  quv2            String?
+  quvIndice       String?
+  qux             String?
+  qvv             String?
+  qvvmer          String?
+  qw1             String?
+  qw2             String?
+  qww             String?
+  tn              String?
+  tn50            String?
+  tnsol           String?
+  tubeneige       String?
+  tx              String?
+  dxi3S           String?
+  fxi3S           String?
+  hfxi3S          String?
+  qdxi3S          String?
+  qfxi3S          String?
+  qhfxi3S         String?
+  poste           Poste    @relation(fields: [numPoste], references: [numPoste])
 
   @@id([numPoste, dateObservation])
   @@index([numPoste])
