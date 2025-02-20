@@ -249,7 +249,7 @@ export function normalizeObservationRecord(record: Record<string, unknown>): Rec
         if (name === 'dateObservation') {
             normalized[name] = convertToISODate(record[source] as string);
         } else if (name === 'numPoste') {
-            normalized[name] = sanitizeNumPoste(record[source]);
+            normalized[name] = sanitizeNumPoste(record[source] as string);
         } else {
             normalized[name] = sanitizeValue(record[source], type);
         }

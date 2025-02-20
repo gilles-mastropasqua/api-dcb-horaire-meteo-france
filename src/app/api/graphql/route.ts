@@ -8,7 +8,7 @@ import { renderPlaygroundPage } from 'graphql-playground-html';
 const { handleRequest } = createYoga({
     schema: schema,
     graphqlEndpoint: '/api/graphql',
-    fetchAPI: { Response },
+    fetchAPI: { Request, Response },
     graphiql: false,
 });
 
@@ -18,4 +18,14 @@ export function GET() {
     });
 }
 
-export { handleRequest as POST, handleRequest as OPTIONS };
+export async function OPTIONS(request: Request) {
+    return handleRequest(request, {});
+}
+
+
+export async function POST(request: Request) {
+    return handleRequest(request, {});
+}
+
+
+// export { handleRequest as POST };
