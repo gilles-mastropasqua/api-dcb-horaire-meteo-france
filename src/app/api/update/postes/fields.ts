@@ -52,22 +52,22 @@ export type PosteRecord = {
  * @param record The raw CSV record.
  * @returns A normalized object with formatted values.
  */
-export function normalizePosteRecord(record: Partial<PosteRecord>): Partial<PosteRecord> {
+export function normalizePosteRecord(record: PosteRecord): Partial<PosteRecord> {
     const normalized: Partial<PosteRecord> = {};
 
     POSTE_FIELDS.forEach(({ source, type }) => {
         const fieldName = camelCase(source);
         const value = record[source as keyof PosteRecord];
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        normalized[fieldName] = sanitizeValue(value, type);
+        if (source == 'NUM_POSTE') {
+            normalized.numPoste = sanitizeNumPoste(value as string);
+        } else {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            normalized[fieldName] = sanitizeValue(value, type);
+        }
     });
-
-    // Ensure numPoste is properly formatted
-    normalized.numPoste = sanitizeNumPoste(record['numPoste']);
 
     // Derive `posteOuvert` based on `datferm`
     normalized.posteOuvert = !record['datferm'];
-
     return normalized;
 }

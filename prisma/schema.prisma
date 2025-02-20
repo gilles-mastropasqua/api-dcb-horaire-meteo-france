@@ -2,26 +2,71 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator pothos {
+  provider = "prisma-pothos-types"
+  // clientOutput = "@prisma/client"
+  // output       = "./pothos-types.ts"
+}
+
+generator pothosCrud {
+  provider            = "prisma-generator-pothos-codegen"
+  generatorConfigPath = "./pothos.config.js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+/// Represents a meteorological observation station.
 model Poste {
-  numPoste        String               @id @unique @db.Char(8)
-  nomUsuel        String
-  commune         String
-  lieuDit         String?
-  datouvr         DateTime?
-  datferm         DateTime?
-  posteOuvert     Boolean              @default(false)
-  lat             Float
-  lon             Float
-  lambx           Int?
-  lamby           Int?
-  alti            Int?
+  /// Unique Météo-France station number (8 digits).
+  numPoste String @id @unique @db.Char(8)
+
+  /// Commonly used name of the station.
+  nomUsuel String
+
+  /// Name of the municipality where the station is located.
+  commune String
+
+  /// Specific place or locality where the station is situated.
+  lieuDit String?
+
+  /// Date when the station was opened (ISO 8601 format: YYYY-MM-DDTHH:mm:ss.sssZ).
+  datouvr DateTime?
+
+  /// Date when the station was closed (ISO 8601 format: YYYY-MM-DDTHH:mm:ss.sssZ).
+  datferm DateTime?
+
+  /// Indicates whether the station is currently open.
+  posteOuvert Boolean @default(false)
+
+  /// Latitude of the station, negative in the southern hemisphere (in degrees and millionths of a degree).
+  lat Float
+
+  /// Longitude of the station, negative west of Greenwich (in degrees and millionths of a degree).
+  lon Float
+
+  /// Lambert X coordinate in hectometers, computed from latitude and longitude.
+  lambx Int?
+
+  /// Lambert Y coordinate in hectometers, computed from latitude and longitude.
+  lamby Int?
+
+  /// Altitude of the observation shelter or the rain gauge if no shelter (in meters).
+  alti Int?
+
+  /// Type of station according to its data acquisition and processing method.
+  /// - `0` = Synoptic station, real-time acquisition, expertise at D+1
+  /// - `1` = Automatic Radome-Resome station, real-time acquisition, expertise at D+1
+  /// - `2` = Non-Radome-Resome automatic station, real-time acquisition, expertise at D+1
+  /// - `3` = Automatic station, real-time acquisition, delayed expertise (up to M+21 days)
+  /// - `4` = Manual climatological station or automatic station, delayed acquisition, delayed expertise (up to M+21 days)
+  /// - `5` = Station with real-time or delayed acquisition, non-expertised or data expertise not guaranteed
   typePosteActuel Int?
-  observations    ObservationHoraire[]
+
+  /// List of hourly observations recorded for this station.
+  observations ObservationHoraire[]
 
   @@index([posteOuvert])
 }

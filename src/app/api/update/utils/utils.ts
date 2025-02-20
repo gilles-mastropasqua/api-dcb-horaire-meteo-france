@@ -55,7 +55,6 @@ export function convertToISODate(aaaammjjhh: string | number): string | null {
  * @param value The station number.
  * @returns A formatted 8-digit station number.
  */
-export function sanitizeNumPoste(value: unknown): string {
-    if (typeof value !== 'string') return '';
+export function sanitizeNumPoste(value: string): string {
     return value.trim().padStart(8, '0');
 }

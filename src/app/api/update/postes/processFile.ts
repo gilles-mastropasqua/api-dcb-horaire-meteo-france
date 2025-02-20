@@ -1,9 +1,6 @@
-import { PrismaClient } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
 import { normalizePosteRecord, PosteRecord } from '@/app/api/update/postes/fields';
-
-// Initialize Prisma client for database interactions
-const prisma = new PrismaClient({ log: ['info', 'warn', 'error'] });
+import prisma from '@/lib/prisma';
 
 // Batch processing configurations
 const BATCH_SIZE = 50;
