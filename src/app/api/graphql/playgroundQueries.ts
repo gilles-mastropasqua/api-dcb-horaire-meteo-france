@@ -3,7 +3,10 @@ export const playgroundQueries = [
         name: 'List of Stations',
         endpoint: '/api/graphql',
         query: `query GetPostes {
-  findManyPoste(skip: 15, take: 5) {
+  findManyPoste(
+    skip: 15 # Optional
+    take: 5 # Optional : default 50
+  ) {
     nomUsuel
     numPoste
     commune
