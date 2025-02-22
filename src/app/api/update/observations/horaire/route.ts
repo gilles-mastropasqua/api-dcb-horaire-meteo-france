@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { processFile } from './processFile';
 
-const API_URL = 'https://www.data.gouv.fr/api/2/datasets/6569b4473bedf2e7abad3b72/resources/?page=1&page_size=10000';
-
 /**
  * Handles a GET request to fetch and process meteorological observation files.
  *
@@ -32,6 +30,15 @@ export async function GET(req: Request) {
                 success: false,
                 error: 'Missing required parameter: period',
             }, { status: 400 });
+        }
+
+        const API_URL = process.env.OBSERVATIONS_HORAIRE_CSV_URL;
+        if (!API_URL) {
+            console.error(`[${requestId}] [ERROR] CSV file URL is not defined`);
+            return NextResponse.json({
+                success: false,
+                error: 'CSV file URL is not defined',
+            }, { status: 500 });
         }
 
         console.log(`[${requestId}] [INFO] Fetching file list from ${API_URL}`);

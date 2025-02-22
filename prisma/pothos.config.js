@@ -6,9 +6,10 @@ module.exports = {
     crud: {
         outputDir: 'src/graphql/generated/',
         inputsImporter: `import * as Inputs from '@/graphql/generated/inputs';`,
-        resolverImports: `import prisma from '@/lib/prisma';`, // ✅ Utilise une instance Prisma
-        prismaCaller: 'prisma', // ✅ Assure-toi que les résolveurs appellent bien `prisma`
+        resolverImports: `import prisma from '@/lib/prisma';`,
+        prismaCaller: 'prisma',
         excludeMutations: true,
+        deleteOutputDirBeforeGenerate: true,
     },
     global: {
         builderLocation: 'src/graphql/builder',
