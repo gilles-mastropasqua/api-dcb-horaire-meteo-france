@@ -11,9 +11,6 @@ const { handleRequest } = createYoga({
     graphqlEndpoint: '/api/graphql',
     fetchAPI: { Request, Response },
     graphiql: false,
-    // context: async () => ({
-    //     introspection: true,
-    // }),
 });
 
 export function GET() {
@@ -33,6 +30,3 @@ export async function OPTIONS(request: Request) {
 export async function POST(request: Request) {
     return handleRequest(request, {});
 }
-
-
-// export { handleRequest as POST };
