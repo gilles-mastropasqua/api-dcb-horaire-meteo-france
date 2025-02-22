@@ -1,6 +1,7 @@
 import { createYoga } from 'graphql-yoga';
 import { schema } from '@/graphql/schema';
 import { renderPlaygroundPage } from 'graphql-playground-html';
+import { playgroundQueries } from '@/app/api/graphql/playgroundQueries';
 
 /**
  * Handles GraphQL requests in Next.js using GraphQL Yoga.
@@ -10,10 +11,16 @@ const { handleRequest } = createYoga({
     graphqlEndpoint: '/api/graphql',
     fetchAPI: { Request, Response },
     graphiql: false,
+    // context: async () => ({
+    //     introspection: true,
+    // }),
 });
 
 export function GET() {
-    return new Response(renderPlaygroundPage({ endpoint: '/api/graphql' }), {
+    return new Response(renderPlaygroundPage({
+        endpoint: '/api/graphql',
+        tabs: playgroundQueries,
+    }), {
         headers: { 'Content-Type': 'text/html' },
     });
 }
